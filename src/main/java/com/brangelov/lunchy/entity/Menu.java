@@ -9,9 +9,19 @@ import java.util.List;
 @Table(name = "menus")
 public class Menu implements Identity {
 
+    public Menu() {
+    }
+
+    public Menu(String name) {
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @Column(nullable = false)
+    private String name;
 
     private LocalDateTime validFrom;
 
@@ -37,6 +47,14 @@ public class Menu implements Identity {
     @Override
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public LocalDateTime getValidFrom() {

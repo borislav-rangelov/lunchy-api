@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/restaurants/{restaurantId}/menus")
 public class RestaurantMenuController extends BaseController {
@@ -25,6 +27,22 @@ public class RestaurantMenuController extends BaseController {
         Page<Menu> menus = menuService.getByRestaurantId(restaurantId, pageable);
         return ResponseEntity.ok(new PageModel<>(menus.map(m -> map(m, MenuGetModel.class))));
     }
+
+    @GetMapping("/{id}")
+    public HttpEntity getById(@PathVariable long restaurantId, long id) {
+        Optional<Menu> menu = menuService.getByRestaurantIdAndId(restaurantId, id);
+
+        if (!menu.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(map(menu.get(), MenuGetModel.class));
+    }
+
+//    @PostMapping
+//    public HttpEntity create(@PathVariable long restaurantId, @Valid @RequestBody MenuEditModel model) {
+//
+//    }
 
     @Autowired
     public void setMenuService(MenuService menuService) {

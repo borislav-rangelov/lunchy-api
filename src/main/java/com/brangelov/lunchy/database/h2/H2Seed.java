@@ -64,7 +64,7 @@ public class H2Seed implements CommandLineRunner {
         menuItem1 = menuItemRepository.save(menuItem1);
         menuItem2 = menuItemRepository.save(menuItem2);
 
-        Menu menu = new Menu();
+        Menu menu = new Menu("Menu name");
         menu.setRestaurant(restaurant);
         menu.getMenuItems().add(menuItem1);
         menu.getMenuItems().add(menuItem2);
