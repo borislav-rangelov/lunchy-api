@@ -21,7 +21,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Optional<Restaurant> get(long id) {
-        return Optional.ofNullable(repository.getOne(id));
+        return repository.findById(id);
     }
 
     @Override

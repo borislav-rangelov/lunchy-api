@@ -1,12 +1,12 @@
 package com.brangelov.lunchy.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "restaurants")
 public class Restaurant implements Identity {
 
     public Restaurant() {
@@ -20,12 +20,11 @@ public class Restaurant implements Identity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private List<RestaurantLocation> locations;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "restaurant")
+    private List<RestaurantLocation> locations = new ArrayList<>();
 
     @Override
     public long getId() {

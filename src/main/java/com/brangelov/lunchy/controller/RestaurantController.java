@@ -21,16 +21,16 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RequestMapping("/api/restaurants")
 public class RestaurantController extends BaseController {
 
-    private RestaurantService service;
+    private RestaurantService restaurantService;
 
     @GetMapping
     public HttpEntity getPage(Pageable pageable) {
-        return ResponseEntity.ok(new PageModel<>(service.get(pageable).map(r -> map(r, RestaurantGetModel.class))));
+        return ResponseEntity.ok(new PageModel<>(restaurantService.get(pageable).map(r -> map(r, RestaurantGetModel.class))));
     }
 
     @GetMapping("/{id}")
     public HttpEntity getById(@PathVariable long id) {
-        Optional<Restaurant> restaurant = service.get(id);
+        Optional<Restaurant> restaurant = restaurantService.get(id);
 
         if (!restaurant.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -43,24 +43,45 @@ public class RestaurantController extends BaseController {
     public HttpEntity create(@Valid @RequestBody RestaurantEditModel model) {
         Restaurant restaurant = map(model, Restaurant.class);
 
-        restaurant = service.save(restaurant);
+        restaurant = restaurantService.save(restaurant);
 
         return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getById(restaurant.getId())).toUri())
                 .body(map(restaurant, RestaurantGetModel.class));
     }
 
-    @PostMapping
-    public HttpEntity update(@Valid @RequestBody RestaurantEditModel model) {
-        Restaurant restaurant = map(model, Restaurant.class);
+    @PutMapping("/{id}")
+    public HttpEntity update(@PathVariable long id, @Valid @RequestBody RestaurantEditModel model) {
 
-        restaurant = service.save(restaurant);
+        Optional<Restaurant> existing = restaurantService.get(id);
 
-        return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getById(restaurant.getId())).toUri())
-                .body(map(restaurant, RestaurantGetModel.class));
+        if (!existing.isPresent()) {
+            Restaurant restaurant = map(model, Restaurant.class);
+            restaurant = restaurantService.save(restaurant);
+
+            return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getById(restaurant.getId())).toUri())
+                    .body(map(restaurant, RestaurantGetModel.class));
+        }
+
+        Restaurant restaurant = existing.get();
+        map(model, restaurant);
+
+        restaurant = restaurantService.save(restaurant);
+        return ResponseEntity.ok(map(restaurant, RestaurantGetModel.class));
+    }
+
+    @DeleteMapping("/{id}")
+    public HttpEntity delete(@PathVariable long id) {
+        Optional<Restaurant> restaurant = restaurantService.remove(id);
+
+        if (!restaurant.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
     }
 
     @Autowired
-    public void setService(RestaurantService service) {
-        this.service = service;
+    public void setRestaurantService(RestaurantService restaurantService) {
+        this.restaurantService = restaurantService;
     }
 }

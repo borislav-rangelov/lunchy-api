@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
+@Table(name = "locations")
 public class RestaurantLocation implements Identity {
 
     public RestaurantLocation() {
@@ -18,12 +19,14 @@ public class RestaurantLocation implements Identity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String name;
 
+    @Column(length = 2500) // web browsers support around is 2000
     private String locationString;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurantId")
     private Restaurant restaurant;
 
     @Override

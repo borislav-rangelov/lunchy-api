@@ -11,6 +11,10 @@ public abstract class BaseController {
         return modelMapper.map(source, type);
     }
 
+    protected <TS, TD> void map(TS source, TD destination) {
+        modelMapper.map(source, destination);
+    }
+
     @Autowired
     public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
