@@ -26,7 +26,7 @@ public class RestaurantLocation implements Identity {
     private String locationString;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurantId")
+    @JoinColumn(name = "restaurantId", nullable = false)
     private Restaurant restaurant;
 
     @Override

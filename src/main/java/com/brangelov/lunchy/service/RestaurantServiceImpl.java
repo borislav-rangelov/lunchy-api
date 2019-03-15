@@ -1,6 +1,7 @@
 package com.brangelov.lunchy.service;
 
 import com.brangelov.lunchy.entity.Restaurant;
+import com.brangelov.lunchy.entity.RestaurantWithMenus;
 import com.brangelov.lunchy.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,11 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public Optional<Restaurant> get(long id) {
         return repository.findById(id);
+    }
+
+    @Override
+    public Optional<RestaurantWithMenus> getByIdWithMenus(long id) {
+        return Optional.ofNullable(repository.findProjectedById(id, RestaurantWithMenus.class));
     }
 
     @Override

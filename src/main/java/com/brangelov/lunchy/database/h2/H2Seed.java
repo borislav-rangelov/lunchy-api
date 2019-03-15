@@ -1,13 +1,7 @@
 package com.brangelov.lunchy.database.h2;
 
-import com.brangelov.lunchy.entity.Authority;
-import com.brangelov.lunchy.entity.Restaurant;
-import com.brangelov.lunchy.entity.RestaurantLocation;
-import com.brangelov.lunchy.entity.User;
-import com.brangelov.lunchy.repository.AuthorityRepository;
-import com.brangelov.lunchy.repository.RestaurantLocationRepository;
-import com.brangelov.lunchy.repository.RestaurantRepository;
-import com.brangelov.lunchy.repository.UserRepository;
+import com.brangelov.lunchy.entity.*;
+import com.brangelov.lunchy.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -25,15 +19,19 @@ public class H2Seed implements CommandLineRunner {
     private final AuthorityRepository authorityRepository;
     private final RestaurantRepository restaurantRepository;
     private final RestaurantLocationRepository locationRepository;
+    private final MenuRepository menuRepository;
+    private final MenuItemRepository menuItemRepository;
     private final PasswordEncoder encoder;
 
     public H2Seed(UserRepository userRepository, AuthorityRepository authorityRepository,
                   RestaurantRepository restaurantRepository, RestaurantLocationRepository locationRepository,
-                  PasswordEncoder encoder) {
+                  MenuRepository menuRepository, MenuItemRepository menuItemRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
         this.restaurantRepository = restaurantRepository;
         this.locationRepository = locationRepository;
+        this.menuRepository = menuRepository;
+        this.menuItemRepository = menuItemRepository;
         this.encoder = encoder;
     }
 
@@ -54,8 +52,23 @@ public class H2Seed implements CommandLineRunner {
 
         RestaurantLocation location = new RestaurantLocation("Location 1", null);
         location.setRestaurant(restaurant);
-        restaurant.setLocations(Arrays.asList(location));
+
         locationRepository.save(location);
-        restaurantRepository.save(restaurant);
+
+        MenuItem menuItem1 = new MenuItem("Menu item 1", "Description 1", 300, 250);
+        MenuItem menuItem2 = new MenuItem("Menu item 2", "Description 1", 300, 250);
+
+        menuItem1.setRestaurant(restaurant);
+        menuItem2.setRestaurant(restaurant);
+
+        menuItem1 = menuItemRepository.save(menuItem1);
+        menuItem2 = menuItemRepository.save(menuItem2);
+
+        Menu menu = new Menu();
+        menu.setRestaurant(restaurant);
+        menu.getMenuItems().add(menuItem1);
+        menu.getMenuItems().add(menuItem2);
+
+        menuRepository.save(menu);
     }
 }

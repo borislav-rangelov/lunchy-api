@@ -1,12 +1,16 @@
 package com.brangelov.lunchy.controller;
 
 import com.brangelov.lunchy.entity.Restaurant;
+import com.brangelov.lunchy.entity.RestaurantWithMenus;
 import com.brangelov.lunchy.model.PageModel;
 import com.brangelov.lunchy.model.RestaurantEditModel;
 import com.brangelov.lunchy.model.RestaurantGetModel;
+import com.brangelov.lunchy.model.RestaurantWithMenusGetModel;
 import com.brangelov.lunchy.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +28,9 @@ public class RestaurantController extends BaseController {
     private RestaurantService restaurantService;
 
     @GetMapping
-    public HttpEntity getPage(Pageable pageable) {
-        return ResponseEntity.ok(new PageModel<>(restaurantService.get(pageable).map(r -> map(r, RestaurantGetModel.class))));
+    public HttpEntity getPage(@PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(new PageModel<>(restaurantService.get(pageable)
+                .map(r -> map(r, RestaurantGetModel.class))));
     }
 
     @GetMapping("/{id}")
@@ -37,6 +42,17 @@ public class RestaurantController extends BaseController {
         }
 
         return ResponseEntity.ok(map(restaurant.get(), RestaurantGetModel.class));
+    }
+
+    @GetMapping("/{id}/with-menus")
+    public HttpEntity getByIdWithMenus(@PathVariable long id) {
+        Optional<RestaurantWithMenus> restaurant = restaurantService.getByIdWithMenus(id);
+
+        if (!restaurant.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(map(restaurant.get(), RestaurantWithMenusGetModel.class));
     }
 
     @PostMapping

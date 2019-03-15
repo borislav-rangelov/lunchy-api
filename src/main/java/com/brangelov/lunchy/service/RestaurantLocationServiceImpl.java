@@ -2,6 +2,8 @@ package com.brangelov.lunchy.service;
 
 import com.brangelov.lunchy.entity.RestaurantLocation;
 import com.brangelov.lunchy.repository.RestaurantLocationRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +14,7 @@ import java.util.Optional;
 @Service
 public class RestaurantLocationServiceImpl implements RestaurantLocationService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestaurantLocationServiceImpl.class);
     private RestaurantLocationRepository repository;
 
     @Override
