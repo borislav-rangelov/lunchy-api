@@ -1,4 +1,4 @@
-package com.brangelov.lunchy.database;
+package com.brangelov.lunchy.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
